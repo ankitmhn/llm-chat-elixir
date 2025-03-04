@@ -39,6 +39,7 @@ defmodule ElixirChatbotWeb.ChatbotLive.FormComponent do
       {:ok, message} ->
         notify_parent({:saved, message})
         # Reset input field after submit
+        # {:noreply, assign(socket, :content, "") |> push_navigate(to: "/foo")}
         {:noreply, assign(socket, :content, "")}
 
       {:error, %Ecto.Changeset{} = changeset} ->

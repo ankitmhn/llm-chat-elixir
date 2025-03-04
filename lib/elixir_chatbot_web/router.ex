@@ -18,6 +18,7 @@ defmodule ElixirChatbotWeb.Router do
     pipe_through :browser
 
     get "/", PageController, :home
+    get "/foo", PageController, :foo
   end
 
   # Other scopes may use custom stacks.

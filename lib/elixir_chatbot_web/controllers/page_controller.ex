@@ -6,4 +6,8 @@ defmodule ElixirChatbotWeb.PageController do
     # so skip the default app layout.
     render(conn, :home, layout: false)
   end
+
+  def foo(conn, _params) do
+    json(conn, %{message: "Hello, world!"})
+  end
 end

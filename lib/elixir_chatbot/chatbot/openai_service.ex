@@ -1,12 +1,55 @@
 defmodule ElixirChatbot.OpenaiService do
   defp default_system_prompt do
     """
-    You are a chatbot that only answers questions about the programming language Elixir.
-    Answer short with just a 1-3 sentences.
-    If the question is about another programming language, make a joke about it.
-    If the question is about something else, answer something like:
-    "I dont know, its not my cup of tea" or "I have no opinion about that topic".
+    You are a chatbot maps the users' request to the corresponding Elixir functions.
+    You decide which function to call based on the user's request.
+    You will be given a list of available functions and their descriptions in the tools section.
+    You need to decide which function to call based on the user's request. If any of the required parameters are not provided, you should ask for them.
+    You will then return the function name and its arguments.
     """
+  end
+
+  defp default_tools do
+    [
+      %{
+        "type" => "function",
+        "function" => %{
+          "name" => "record_maintenance_task",
+          "description" => "Record a maintenance task for a given aircraft",
+          "parameters" => %{
+            "type" => "object",
+            "properties" => %{
+              "aircraft_id" => %{
+                "type" => "string"
+              },
+              "task_description" => %{
+                "type" => "string"
+              },
+              "task_date" => %{
+                "type" => "string"
+              }
+            },
+            "required" => ["aircraft_id", "task_description", "task_date"]
+          }
+        }
+      },
+      %{
+        "type" => "function",
+        "function" => %{
+          "name" => "get_aircraft_utilization",
+          "description" => "Get the utilization of a given aircraft",
+          "parameters" => %{
+            "type" => "object",
+            "properties" => %{
+              "aircraft_id" => %{
+                "type" => "string"
+              }
+            },
+            "required" => ["aircraft_id"]
+          }
+        }
+      }
+    ]
   end
 
   def call(prompts, opts \\ []) do
@@ -20,7 +63,8 @@ defmodule ElixirChatbot.OpenaiService do
           ],
           prompts
         ),
-      "temperature" => 0.7
+      "temperature" => 0.7,
+      "tools" => default_tools()
     }
     |> Jason.encode!()
     |> request(opts)
